@@ -1,0 +1,42 @@
+plugins {
+    id 'application'
+    id 'java'
+}
+
+java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jogamp.org/deployment/maven/"
+    }
+}
+
+dependencies {
+    implementation 'org.bytedeco:javacv-platform:1.5.10'
+    implementation 'org.jogamp.jogl:jogl-all-main:2.5.0'
+    implementation 'org.jogamp.gluegen:gluegen-rt-main:2.5.0'
+}
+
+application {
+    mainClass = 'RtmpViewer' // Use the fully qualified class name if it's in a package
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': application.mainClass.get()  // Correct way to refer to mainClass
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // Avoids duplicate entries
+}
+

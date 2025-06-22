@@ -1,0 +1,34 @@
+plugins {
+    id 'application'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jogamp.org/deployment/maven/"
+    }
+}
+
+dependencies {
+    implementation 'org.bytedeco:javacv-platform:1.5.10'
+    implementation 'org.jogamp.jogl:jogl-all-main:2.5.0'
+    implementation 'org.jogamp.gluegen:gluegen-rt-main:2.5.0'
+}
+
+application {
+    mainClass = 'RtmpViewer'
+}
+
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': mainClassName
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
